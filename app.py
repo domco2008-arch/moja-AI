@@ -35,12 +35,15 @@ if prompt := st.chat_input("Napíš správu..."):
         supabase.table("chat_history").insert({"role": "user", "content": prompt}).execute()
     except Exception as e:
         pass  # Ak tabuľka ešte neexistuje, aplikácia nespadne
-
-    # Generovanie odpovede cez Gemini
+# Generovanie odpovede cez Gemini
     with st.chat_message("assistant"):
         response = client.models.generate_content(
-           model="gemini-3.5-flash",
+            model="gemini-3.5-flash",
             contents=prompt,
+            config={
+                "system_instruction": "Odpovedaj vždy plynulo po slovensky."
+            }
+        )
         )
         st.markdown(response.text)
         st.session_state.messages.append({"role": "assistant", "content": response.text})
