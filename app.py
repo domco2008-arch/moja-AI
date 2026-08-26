@@ -39,7 +39,7 @@ if prompt := st.chat_input("Napíš správu..."):
     # Generovanie odpovede cez Gemini
     with st.chat_message("assistant"):
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+           model="gemini-3.5-flash",
             contents=prompt,
         )
         st.markdown(response.text)
