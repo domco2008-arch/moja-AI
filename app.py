@@ -52,9 +52,9 @@ with st.sidebar:
             st.session_state.current_chat_id = chat_id
             st.rerun()
 
-    st.markdown("---")
-    # Zadávanie API kľúča (vhodné, ak to budú používať iní)
-  user_api_key = st.secrets.get("GEMINI_API_KEY", "")
+   st.markdown("---")
+# Zadávanie API kľúča
+user_api_key = st.secrets.get("GEMINI_API_KEY", "")
     
 
 # 4. HLAVNÉ OKNO CHATU
