@@ -44,7 +44,6 @@ if prompt := st.chat_input("Napíš správu..."):
                 "system_instruction": "Odpovedaj vždy plynulo po slovensky."
             }
         )
-        )
         st.markdown(response.text)
         st.session_state.messages.append({"role": "assistant", "content": response.text})
 
