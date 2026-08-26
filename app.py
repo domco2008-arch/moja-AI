@@ -52,10 +52,9 @@ with st.sidebar:
             st.session_state.current_chat_id = chat_id
             st.rerun()
 
-   st.markdown("---")
-# Zadávanie API kľúča
-user_api_key = st.secrets.get("GEMINI_API_KEY", "")
-    
+    st.markdown("---")
+    # Zadávanie API kľúča
+    user_api_key = st.secrets.get("GEMINI_API_KEY", "")
 
 # 4. HLAVNÉ OKNO CHATU
 current_chat = st.session_state.chats[st.session_state.current_chat_id]
@@ -68,7 +67,7 @@ for message in current_chat["messages"]:
 # Vstup pre novú správu
 if prompt := st.chat_input("Názov alebo otázka pre AI..."):
     if not user_api_key:
-        st.error("Prosím, vlož API kľúč v ľavom menu.")
+        st.error("Prosím, skontroluj GEMINI_API_KEY v nastaveniach Secrets v Streamlitu.")
         st.stop()
 
     # Ak je to prvá správa v novom chate, nastavíme názov chatu podľa nej
@@ -91,7 +90,7 @@ if prompt := st.chat_input("Názov alebo otázka pre AI..."):
         with st.spinner("AI premýšľa..."):
             try:
                 response = client.models.generate_content(
-                    model="gemini-3.6-flash",
+                    model="gemini-2.5-flash",
                     contents=contents,
                     config=types.GenerateContentConfig(
                         system_instruction="Si priateľský, múdry a nápomocný AI asistent. Odpovedaj prehľadne a vždy v slovenčine."
