@@ -54,12 +54,8 @@ with st.sidebar:
 
     st.markdown("---")
     # Zadávanie API kľúča (vhodné, ak to budú používať iní)
-    user_api_key = st.text_input(
-        "Tvoj Gemini API Kľúč:", 
-        type="password", 
-        value="AQ.Ab8RN6IuscjLll1vRzi4CS9RhgiKy5jjtKzXCfmg08lFGD4DxQ", # Tvoj predvolený kľúč
-        help="Sem si môže používateľ zadať vlastný kľúč."
-    )
+  user_api_key = st.secrets.get("GEMINI_API_KEY", "")
+    
 
 # 4. HLAVNÉ OKNO CHATU
 current_chat = st.session_state.chats[st.session_state.current_chat_id]
