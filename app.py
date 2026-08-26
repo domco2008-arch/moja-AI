@@ -35,20 +35,20 @@ if prompt := st.chat_input("Napíš správu..."):
         supabase.table("chat_history").insert({"role": "user", "content": prompt}).execute()
     except Exception as e:
         pass  # Ak tabuľka ešte neexistuje, aplikácia nespadne
-# Generovanie odpovede cez Gemini
+# Generovanie odpovede cez Gemini so streamovaním (rýchlejšia odozva)
     with st.chat_message("assistant"):
-        response = client.models.generate_content(
+        response_stream = client.models.generate_content_stream(
             model="gemini-3.5-flash",
             contents=prompt,
             config={
                 "system_instruction": "Odpovedaj vždy plynulo po slovensky."
             }
         )
-        st.markdown(response.text)
-        st.session_state.messages.append({"role": "assistant", "content": response.text})
+        response_text = st.write_stream(response_stream)
+        st.session_state.messages.append({"role": "assistant", "content": response_text})
 
     # Uloženie odpovede asistenta do Supabase
     try:
-        supabase.table("chat_history").insert({"role": "assistant", "content": response.text}).execute()
+        supabase.table("chat_history").insert({"role": "assistant", "content": response_text}).execute()
     except Exception as e:
         pass
