@@ -36,7 +36,7 @@ if prompt := st.chat_input("Napíš správu..."):
     except Exception as e:
         pass
 
-    # Úplne čisté volanie Gemini bez chybových configov (so slovenskou inštrukciou v texte)
+    # Úplne čisté volanie Gemini (so slovenskou inštrukciou v texte)
     full_prompt = f"Odpovedaj vždy po slovensky. Používateľ píše: {prompt}"
 
     with st.chat_message("assistant"):
