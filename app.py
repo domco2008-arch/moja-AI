@@ -36,14 +36,13 @@ if prompt := st.chat_input("Napíš správu..."):
     except Exception as e:
         pass
 
-    # Generovanie odpovede cez Gemini (stabilné a rýchle)
+    # Úplne čisté volanie Gemini bez chybových configov (so slovenskou inštrukciou v texte)
+    full_prompt = f"Odpovedaj vždy po slovensky. Používateľ píše: {prompt}"
+
     with st.chat_message("assistant"):
         response = client.models.generate_content(
             model="gemini-1.5-flash",
-            contents=prompt,
-            config={
-                "system_instruction": "Odpovedaj vždy plynulo po slovensky."
-            }
+            contents=full_prompt,
         )
         st.markdown(response.text)
         st.session_state.messages.append({"role": "assistant", "content": response.text})
