@@ -1,5 +1,5 @@
 import streamlit as st
-from google import genai
+import google.generativeai as genai
 from supabase import create_client, Client
 
 st.set_page_config(page_title="AI Chatbot", page_icon="🤖")
@@ -10,8 +10,22 @@ GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 
-# Inicializácia klientov
-client = genai.Client(api_key=GEMINI_API_KEY)
+# Inicializácia Gemini
+genai.configure(api_key=GEMINI_API_KEY)
+
+# Nastavenie modelu so slovenskou inštrukciou
+generation_config = {
+    "temperature": 0.7,
+}
+system_instruction = "Odpovedaj vždy plynulo po slovensky."
+
+model = genai.GenerativeModel(
+    model_name="gemini-1.5-flash",
+    generation_config=generation_config,
+    system_instruction=system_instruction
+)
+
+# Inicializácia Supabase
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # Načítanie histórie správ zo session state
@@ -36,19 +50,18 @@ if prompt := st.chat_input("Napíš správu..."):
     except Exception as e:
         pass
 
-    # Úplne čisté volanie Gemini (so slovenskou inštrukciou v texte)
-    full_prompt = f"Odpovedaj vždy po slovensky. Používateľ píše: {prompt}"
-
+    # Generovanie odpovede cez stabilné Gemini API
     with st.chat_message("assistant"):
-        response = client.models.generate_content(
-            model="gemini-1.5-flash",
-            contents=full_prompt,
-        )
-        st.markdown(response.text)
-        st.session_state.messages.append({"role": "assistant", "content": response.text})
-
-    # Uloženie odpovede asistenta do Supabase
-    try:
-        supabase.table("chat_history").insert({"role": "assistant", "content": response.text}).execute()
-    except Exception as e:
-        pass
+        try:
+            response = model.generate_content(prompt)
+            st.markdown(response.text)
+            st.session_state.messages.append({"role": "assistant", "content": response.text})
+            
+            # Uloženie odpovede asistenta do Supabase
+            try:
+                supabase.table("chat_history").insert({"role": "assistant", "content": response.text}).execute()
+            except Exception as e:
+                pass
+                
+        except Exception as e:
+            st.error(f"Chyba pri generovaní odpovede: {e}")
