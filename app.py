@@ -13,14 +13,15 @@ SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 # Inicializácia Gemini
 genai.configure(api_key=GEMINI_API_KEY)
 
-# Nastavenie modelu so slovenskou inštrukciou
+# Nastavenie modelu a slovenskej inštrukcie
 generation_config = {
     "temperature": 0.7,
 }
 system_instruction = "Odpovedaj vždy plynulo po slovensky."
 
+# Použijeme aktuálny podporovaný model
 model = genai.GenerativeModel(
-    model_name="gemini-1.5-flash",
+    model_name="gemini-2.5-flash",
     generation_config=generation_config,
     system_instruction=system_instruction
 )
@@ -50,7 +51,7 @@ if prompt := st.chat_input("Napíš správu..."):
     except Exception as e:
         pass
 
-    # Generovanie odpovede cez stabilné Gemini API
+    # Generovanie odpovede cez Gemini API
     with st.chat_message("assistant"):
         try:
             response = model.generate_content(prompt)
